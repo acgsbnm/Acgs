@@ -1,0 +1,319 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Nopcommerce Integration WebAPI Endpoint Catalog</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="css/styles.css" rel="stylesheet">
+</head>
+<body>
+<!-- Floating settings panel -->
+<button class="settings-fab" id="settingsFab" title="Display settings (Ctrl+,)">&#x2699;</button>
+<div class="settings-panel" id="settingsPanel">
+  <h6>Layout width</h6>
+  <div class="form-check form-switch mb-1">
+    <input class="form-check-input" type="checkbox" id="widthToggle">
+    <label class="form-check-label" for="widthToggle">Full width</label>
+  </div>
+  <div class="settings-divider"></div>
+  <h6>Field details</h6>
+  <div class="form-check form-switch mb-1">
+    <input class="form-check-input" type="checkbox" id="typesToggle">
+    <label class="form-check-label" for="typesToggle">Show data types</label>
+  </div>
+  <div class="form-check form-switch mb-1">
+    <input class="form-check-input" type="checkbox" id="contractToggle">
+    <label class="form-check-label" for="contractToggle">Show NS contract</label>
+  </div>
+  <div class="form-check form-switch mb-1">
+    <input class="form-check-input" type="checkbox" id="diffToggle">
+    <label class="form-check-label" for="diffToggle">Highlight 4.60/4.90 diffs</label>
+  </div>
+  <div class="settings-divider"></div>
+  <h6>Appearance</h6>
+  <div class="form-check form-switch mb-1">
+    <input class="form-check-input" type="checkbox" id="darkToggle">
+    <label class="form-check-label" for="darkToggle">Dark mode</label>
+  </div>
+  <div class="form-check form-switch mb-1">
+    <input class="form-check-input" type="checkbox" id="printToggle">
+    <label class="form-check-label" for="printToggle">Print view</label>
+  </div>
+  <div class="settings-divider"></div>
+  <h6>Font size</h6>
+  <div class="btn-group w-100" role="group">
+    <button type="button" class="btn btn-outline-secondary fs-btn" data-fs="fs-xs">XS</button>
+    <button type="button" class="btn btn-outline-secondary fs-btn" data-fs="fs-sm">S</button>
+    <button type="button" class="btn btn-outline-secondary fs-btn active" data-fs="fs-md">M</button>
+    <button type="button" class="btn btn-outline-secondary fs-btn" data-fs="fs-lg">L</button>
+  </div>
+</div>
+
+<div class="container container-narrow py-4">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-3">
+      <div>
+          <h1 class="h3 mb-1">Nopcommerce Integration WebAPI Endpoint Catalog</h1>
+        <div class="small-muted">
+          Authoritative endpoint catalogue aligned to BlueBridge scope.
+          <br>Base path: <code class="mono">/api/integration/v1/...</code> &nbsp;|&nbsp; Auth: <code>X-Integration-Key</code> header &nbsp;|&nbsp; All dates: ISO-8601 UTC
+        </div>
+      </div>
+      <div class="text-md-end small-muted">
+        Spec version: <strong id="specVersion">v1.6.3</strong> &nbsp;|&nbsp; Nopcommerce: 4.60 / 4.90
+        <br>Last updated: <strong id="lastUpdated">2026-04-01 11:10 SAST</strong>
+      </div>
+    </div>
+
+    <!-- Legend -->
+    <div class="card shadow-sm mb-2 header-zone">
+      <div class="card-body legend-box py-2">
+        <strong>Legend:</strong>
+        <span class="pill pill-method pill-method-get">GET</span>
+        <span class="pill pill-method pill-method-post">POST</span>
+        <span class="pill pill-method pill-method-put">PUT</span>
+        <span class="pill pill-method pill-method-patch">PATCH</span>
+        <span class="pill pill-method pill-method-delete">DELETE</span>
+        &nbsp;|&nbsp;
+        <span class="pill dir">direction</span>
+        <span class="pill scope">scope</span>
+        <span class="pill idemp">idempotency</span>
+        <span class="pill approval">approval required</span>
+        <span class="pill ver">versions</span>
+        &nbsp;|&nbsp;
+        <span class="status-badge status-2xx">2xx</span>
+        <span class="status-badge status-4xx">4xx</span>
+        <span class="status-badge status-5xx">5xx</span>
+        &nbsp;|&nbsp;
+        <span class="badge badge-ns-required">ERP Required</span>
+        <span class="badge badge-ns-optional">ERP Optional</span>
+        <span class="badge badge-nop-internal">Nop Internal</span>
+        <span class="badge badge-auto-generated">Auto-Gen</span>
+        <span class="small-muted ms-1">(toggle via &#x2699; &#x2192; Show NS contract)</span>
+      </div>
+    </div>
+
+    <!-- Error response schema -->
+    <div class="card shadow-sm mb-2 header-zone">
+      <div class="card-body py-2 header-info">
+        <strong>Canonical error envelope (all endpoints):</strong><span class="new-badge">New in v1.6.1</span>
+        <code class="mono" style="font-size:.75em">{"success":false,"error":{"code":"ITEM_NOT_FOUND","message":"...","details":null},"correlationId":"..."}</code>
+        <br><span class="small-muted">Error codes: <code>ITEM_NOT_FOUND</code> <code>VARIANT_NOT_FOUND</code> <code>VALIDATION_ERROR</code> <code>DUPLICATE_IDEMPOTENCY_KEY</code> <code>APPROVAL_PENDING</code> <code>UNAUTHORIZED</code> <code>FORBIDDEN</code> <code>MODULE_DISABLED</code> <code>RFQ_NOT_SUPPORTED</code> <code>QUOTES_NOT_SUPPORTED</code> <code>RATE_LIMITED</code> <code>PAYLOAD_TOO_LARGE</code> <code>UNSUPPORTED_MEDIA_TYPE</code> <code>INVALID_IMAGE_SOURCE</code> <code>INTERNAL_ERROR</code></span>
+        <br><span class="small-muted">HTTP status mapping:
+          <code>200</code> success |
+          <code>201</code> created |
+          <code>202</code> approval pending |
+          <code>400</code> bad request / validation |
+          <code>401</code> unauthorized |
+          <code>403</code> forbidden |
+          <code>404</code> not found |
+          <code>409</code> duplicate idempotency key |
+          <code>413</code> payload too large |
+          <code>415</code> unsupported media type |
+          <code>422</code> unprocessable |
+          <code>429</code> rate limited |
+          <code>500</code> internal error |
+          <code>501</code> module disabled
+        </span>
+        <div class="mt-2">
+          <button class="btn btn-sm btn-outline-secondary" type="button" onclick="var b=document.getElementById('errorExamplesBlock');b.classList.toggle('open');this.textContent=b.classList.contains('open')?'Hide error examples':'Show error response examples'">Show error response examples</button>
+          <div class="example-payload-block" id="errorExamplesBlock">
+            <h6 class="mt-2">404 &mdash; Item not found</h6>
+            <pre>{"success":false,"error":{"code":"ITEM_NOT_FOUND","message":"No product found with SKU: NONEXIST-SKU","details":null},"correlationId":"a1b2c3d4-e5f6-7890-abcd-ef1234567890"}</pre>
+            <h6>401 &mdash; Unauthorized</h6>
+            <pre>{"success":false,"error":{"code":"UNAUTHORIZED","message":"Invalid or missing X-Integration-Key header","details":null},"correlationId":"f1e2d3c4-b5a6-7890-abcd-ef1234567890"}</pre>
+            <h6>409 &mdash; Duplicate idempotency key</h6>
+            <pre>{"success":false,"error":{"code":"DUPLICATE_IDEMPOTENCY_KEY","message":"Idempotency-Key has already been used for a different request","details":{"originalRequestUtc":"2025-01-15T10:00:00Z","originalAction":"updated"}},"correlationId":"c3d4e5f6-a7b8-9012-cdef-123456789abc"}</pre>
+            <h6>429 &mdash; Rate limited</h6>
+            <pre>{"success":false,"error":{"code":"RATE_LIMITED","message":"Rate limit exceeded for this integration key","details":{"retryAfterSeconds":30}},"correlationId":"c7d8e9f0-a1b2-3456-cdef-45678901bcde"}</pre>
+            <h6>422 &mdash; Validation error</h6>
+            <pre>{"success":false,"error":{"code":"VALIDATION_ERROR","message":"One or more validation errors occurred","details":[{"field":"name","message":"Name is required"},{"field":"price","message":"Price must be >= 0"}]},"correlationId":"d4e5f6a7-b8c9-0123-def1-23456789abcd"}</pre>
+            <h6>202 &mdash; Approval pending (success with staging)</h6>
+            <pre>{"success":true,"data":{"status":"PENDING_APPROVAL","pendingChangeId":42,"pendingChangeNumber":"PC-000042","message":"Change staged for approval. Use GET /approvals/42 to check status."},"correlationId":"e5f6a7b8-c9d0-1234-ef12-3456789abcde"}</pre>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sticky search bar -->
+    <div class="card shadow-sm mb-3 sticky-search header-zone">
+      <div class="card-body">
+        <div class="row g-2 align-items-center">
+          <div class="col-12 col-md-5">
+            <input id="searchBox" class="form-control form-control-lg" type="text"
+                   placeholder="Search e.g. sku, RFQ, /orders, StockQuantity, TierPrice, GiftCard, ping...">
+            <span class="kbd-hint"><kbd>Ctrl</kbd>+<kbd>K</kbd> focus &nbsp; <kbd>Esc</kbd> clear</span>
+          </div>
+          <div class="col-12 col-md-3">
+            <select id="jumpToSelect" class="form-select jump-to-dropdown"><option value="">Jump to section&hellip;</option></select>
+          </div>
+          <div class="col-12 col-md-4">
+            <div class="d-flex gap-2">
+              <button id="expandAllBtn" class="btn btn-outline-secondary w-100">Expand all</button>
+              <button id="collapseAllBtn" class="btn btn-outline-secondary w-100">Collapse all</button>
+            </div>
+          </div>
+        </div>
+        <div class="mt-2 header-info">
+          <strong>Required headers (all endpoints):</strong>
+          <code>X-Integration-Key</code> (auth),
+          <code>X-Correlation-Id</code> (optional; server generates if absent),
+          <code>X-Store-Id</code> or <code>?storeId=</code> (optional; defaults to current store).
+          <strong>Write endpoints also require:</strong> <code>Idempotency-Key</code>.
+        </div>
+      </div>
+    </div>
+
+    <div class="card shadow-sm mb-3 header-zone guidance-panel" id="implementation-guidance">
+      <div class="card-header guidance-panel-header p-0">
+        <button class="accordion-button guidance-panel-toggle" id="toggleGuidanceBtn" type="button" data-bs-toggle="collapse" data-bs-target="#implementationGuidanceBody" aria-expanded="true" aria-controls="implementationGuidanceBody">
+          <span>
+            <strong>Implementation Guidance</strong>
+            <span class="new-badge">New in v1.6.1</span>
+            <span class="small-muted ms-2">Contract notes for security, content semantics, and SKU handling.</span>
+          </span>
+        </button>
+      </div>
+      <div class="collapse show" id="implementationGuidanceBody">
+        <div class="card-body header-info guidance-panel-body">
+          <ul class="nav nav-tabs guidance-tabs" id="implementationGuidanceTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+              <button class="nav-link active" id="security-ops-tab" data-bs-toggle="tab" data-bs-target="#security-ops-pane" type="button" role="tab" aria-controls="security-ops-pane" aria-selected="true">Security and Operational Requirements</button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link" id="content-model-tab" data-bs-toggle="tab" data-bs-target="#content-model-pane" type="button" role="tab" aria-controls="content-model-pane" aria-selected="false">Content Model and Write Semantics</button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link" id="sku-identity-tab" data-bs-toggle="tab" data-bs-target="#sku-identity-pane" type="button" role="tab" aria-controls="sku-identity-pane" aria-selected="false">SKU Identity Rules</button>
+            </li>
+          </ul>
+          <div class="tab-content guidance-tab-content" id="implementationGuidanceTabContent">
+            <div class="tab-pane fade show active" id="security-ops-pane" role="tabpanel" aria-labelledby="security-ops-tab" tabindex="0">
+              <div class="guidance-pane-title">
+                <strong>Security and Operational Requirements</strong>
+                <span class="new-badge">New in v1.6.1</span>
+              </div>
+              <div class="row g-3 mt-1">
+                <div class="col-12 col-xl-4">
+                  <strong>Transport and network posture</strong>
+                  <ul class="mb-0 mt-1">
+                    <li>HTTPS is mandatory in every environment. The minimum supported transport version is TLS 1.2. Plain HTTP is not supported.</li>
+                    <li>Supported deployment modes are internet-facing (default), VPN-restricted, or IP-allowlisted. In VPN or allowlist mode, disallowed source networks may receive <code>403 FORBIDDEN</code> before normal request processing.</li>
+                    <li>Use separate base URLs, credentials, monitoring, and alerting per environment. Production and non-production traffic must not share keys.</li>
+                  </ul>
+                </div>
+                <div class="col-12 col-xl-4">
+                  <strong>Auth lifecycle, throttling, and replay protection</strong>
+                  <ul class="mb-0 mt-1">
+                    <li><code>X-Integration-Key</code> is issued per environment and integration partner. Keys must be rotatable without downtime, with controlled overlap during planned cutovers. Raw keys must never be written to logs or support tickets.</li>
+                    <li>Rate limits may vary by environment. Clients must treat <code>429</code> and transient <code>5xx</code> responses as retryable, honor <code>Retry-After</code> when present, and use bounded exponential backoff.</li>
+                    <li>Every write request must include a unique <code>Idempotency-Key</code>. Retries after ambiguous failures must reuse the same key. Reusing a key with a different request body must return <code>409 DUPLICATE_IDEMPOTENCY_KEY</code>.</li>
+                  </ul>
+                </div>
+                <div class="col-12 col-xl-4">
+                  <strong>PII handling and image fetch controls</strong>
+                  <ul class="mb-0 mt-1">
+                    <li>Customer, address, VAT, payment-reference, and gift-card recipient data are sensitive. Mask or redact these fields in logs, monitoring, and non-production test data. Sensitive card data is never exposed by this API.</li>
+                    <li>When <code>imageUrl</code> is used, the source must be a public HTTPS CDN or object-storage URL. Private/internal hosts, localhost, link-local addresses, RFC1918 ranges, and cloud metadata endpoints are not supported and must be rejected.</li>
+                    <li>Image fetch policy: maximum 3 redirects, 15-second download timeout, 10 MB max size after download or base64 decode, and accepted formats limited to JPEG, PNG, GIF, and WebP. Return <code>413</code> for oversized payloads, <code>415</code> for unsupported formats, and <code>422 INVALID_IMAGE_SOURCE</code> for blocked or invalid remote sources.</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="tab-pane fade" id="content-model-pane" role="tabpanel" aria-labelledby="content-model-tab" tabindex="0">
+              <div class="guidance-pane-title">
+                <strong>Content Model and Write Semantics</strong>
+                <span class="new-badge">New in v1.6.1</span>
+              </div>
+              <div class="row g-3 mt-1">
+                <div class="col-12 col-xl-5">
+                  <strong>Single-language catalog contract</strong>
+                  <ul class="mb-0 mt-1">
+                    <li>This version of the contract is intentionally single-language only. Product <code>name</code>, descriptions, and meta fields represent a single live storefront value, not a translation set.</li>
+                    <li>Request and response payloads do not include localized translation arrays. <code>GET /api/integration/v1/reference/languages</code> remains a lookup for store defaults and optional <code>UrlRecord.LanguageId</code> usage only.</li>
+                  </ul>
+                </div>
+                <div class="col-12 col-xl-7">
+                  <strong>Omit vs null vs clear</strong>
+                  <ul class="mb-0 mt-1">
+                    <li><code>PUT /items/by-sku/{sku}</code>: required core fields must always be supplied. For existing products, omitted optional scalar fields remain unchanged. For new products, omitted optional scalar fields fall back to nop defaults.</li>
+                    <li><code>PATCH /items/by-sku/{sku}</code>: omitted fields remain unchanged. Use this endpoint for partial updates, unpublish actions, and soft deletes.</li>
+                    <li><code>PUT /items/by-sku/{sku}/full-sync</code>: on existing products, omitted child objects and collections remain unchanged. Explicit empty arrays on <code>categories</code>, <code>tags</code>, <code>specifications</code>, <code>attributes</code>, <code>images</code>, and <code>combinations</code> mean clear and replace that collection. Clear explicit store mappings by sending <code>{ "allStores": true }</code>.</li>
+                    <li>Use <code>null</code> only to clear optional scalar, date, or text fields. Sending <code>null</code> for required or non-nullable fields, or for related collections and mapped entities, must return <code>422 VALIDATION_ERROR</code>.</li>
+                    <li>Empty string may be used to clear optional free-text fields such as admin comments and meta text. SEO slug behavior remains explicit through <code>PUT /items/by-sku/{sku}/seo-slug</code>.</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="tab-pane fade" id="sku-identity-pane" role="tabpanel" aria-labelledby="sku-identity-tab" tabindex="0">
+              <div class="guidance-pane-title">
+                <strong>SKU Identity Rules</strong>
+                <span class="new-badge">New in v1.6.1</span>
+              </div>
+              <div class="row g-3 mt-1">
+                <div class="col-12 col-xl-5">
+                  <strong>Parent product routes</strong>
+                  <ul class="mb-0 mt-1">
+                    <li>Endpoints shaped like <code>GET</code>, <code>PUT</code>, or <code>PATCH /api/integration/v1/items/by-sku/{sku}</code> treat <code>{sku}</code> as the parent or base product SKU.</li>
+                    <li>For a product such as <code>BAS3000</code> with combinations like <code>BAS3000-GN-XL</code>, call product routes with <code>BAS3000</code>, not the child SKU.</li>
+                    <li>This same parent-SKU rule applies to related product routes such as <code>/attributes</code>, <code>/combinations</code>, <code>/images</code>, <code>/seo-slug</code>, <code>/full-sync</code>, and base pricing routes such as <code>/pricing/by-sku/{sku}</code>.</li>
+                  </ul>
+                </div>
+                <div class="col-12 col-xl-7">
+                  <strong>Child combination SKUs</strong>
+                  <ul class="mb-0 mt-1">
+                    <li>Variant or combination SKUs belong inside the request or response body as <code>variantSku</code> or <code>combinationSku</code>, not in the parent product route.</li>
+                    <li>Use <code>/items/by-sku/{sku}/combinations</code> or <code>/items/by-sku/{sku}/full-sync</code> to create and maintain child combinations under the parent product.</li>
+                    <li>Use child SKUs directly on inventory endpoints only. Those endpoints auto-detect whether the SKU belongs to a base product or a <code>ProductAttributeCombination</code>.</li>
+                    <li>Variant-specific price overrides and stock belong on the combination record, not on the parent product route. Use <code>combinations[].overriddenPrice</code> and variant stock updates for child SKUs.</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="summary" class="small-muted mb-2"></div>
+    <div class="accordion" id="functionsAccordion"></div>
+
+    <div class="small-muted mt-4">
+      Base path: <span class="mono">/api/integration/v1/...</span> &mdash; kept separate from Nopcommerce native APIs.
+      External refs stored in plugin table <code>Acgs_ExternalReference</code> (canonical lookup) with optional GenericAttribute mirror.
+    </div>
+
+    <!-- NS Contract Summary Table -->
+    <div class="card shadow-sm mt-4 mb-4" id="ns-contract-summary">
+      <div class="card-header" style="cursor:pointer" onclick="var b=this.nextElementSibling;var ic=this.querySelector('.ns-summary-chevron');if(b.style.display==='none'){b.style.display='';ic.textContent='\u25BE'}else{b.style.display='none';ic.textContent='\u25B8'}">
+        <h5 class="mb-0"><span class="ns-summary-chevron" style="margin-right:.4em;font-size:.85em">&#x25B8;</span>NetSuite Contract Summary &mdash; Minimum Fields Required by NetSuite</h5>
+        <div class="small-muted">Click to expand. This table shows only the fields that NetSuite must have in its system to fulfill each functional area. Toggle "Show NS contract" in the settings panel (&#x2699;) to see per-endpoint contract badges in the field tables above.</div>
+      </div>
+      <div class="card-body" style="display:none">
+        <div class="mb-3">
+          <strong>Legend:</strong>
+          <span class="badge badge-ns-required">ERP Required</span> NetSuite <strong>must</strong> provide this field &mdash; integration fails without it.
+          <span class="badge badge-ns-optional ms-2">ERP Optional</span> NetSuite <em>can</em> provide this &mdash; enriches data but has server defaults.
+          <span class="badge badge-nop-internal ms-2">Nop Internal</span> Server-side only &mdash; NetSuite never sees or sends this.
+          <span class="badge badge-auto-generated ms-2">Auto-Gen</span> Plugin auto-creates (audit trails, pending changes, URL slugs).
+        </div>
+        <div id="contractSummaryTables"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- JS modules extracted from inline script for maintainability -->
+  <!-- Data files (must load before renderer) -->
+  <script src="js/data-integration-spec.js"></script>
+  <script src="js/data-proposed-additions.js"></script>
+  <script src="js/data-payload-examples.js"></script>
+
+  <!-- Pure rendering/helper functions -->
+  <script src="js/renderer.js"></script>
+
+  <!-- App initialization, UI components, and contract classification -->
+  <script src="js/data-contract-classification.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
