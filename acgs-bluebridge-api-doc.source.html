@@ -1,0 +1,287 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>BlueBridge Integration Interface Catalog</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="css/styles.css" rel="stylesheet">
+</head>
+<body class="full-width show-types show-contracts show-diffs">
+<button class="settings-fab" id="settingsFab" title="Display settings (Ctrl+,)">&#x2699;</button>
+<div class="settings-panel" id="settingsPanel">
+  <h6>Layout width</h6>
+  <div class="form-check form-switch mb-1">
+    <input class="form-check-input" type="checkbox" id="widthToggle" checked>
+    <label class="form-check-label" for="widthToggle">Full width</label>
+  </div>
+  <div class="settings-divider"></div>
+  <h6>Field details</h6>
+  <div class="form-check form-switch mb-1">
+    <input class="form-check-input" type="checkbox" id="typesToggle" checked>
+    <label class="form-check-label" for="typesToggle">Show data types</label>
+  </div>
+  <div class="form-check form-switch mb-1">
+    <input class="form-check-input" type="checkbox" id="contractToggle" checked>
+    <label class="form-check-label" for="contractToggle">Show NS contract</label>
+  </div>
+  <div class="form-check form-switch mb-1">
+    <input class="form-check-input" type="checkbox" id="diffToggle" checked>
+    <label class="form-check-label" for="diffToggle">Highlight 4.60/4.90 diffs</label>
+  </div>
+  <div class="settings-divider"></div>
+  <h6>Appearance</h6>
+  <div class="form-check form-switch mb-1">
+    <input class="form-check-input" type="checkbox" id="darkToggle">
+    <label class="form-check-label" for="darkToggle">Dark mode</label>
+  </div>
+  <div class="form-check form-switch mb-1">
+    <input class="form-check-input" type="checkbox" id="printToggle">
+    <label class="form-check-label" for="printToggle">Print view</label>
+  </div>
+  <div class="settings-divider"></div>
+  <h6>Font size</h6>
+  <div class="btn-group w-100" role="group">
+    <button type="button" class="btn btn-outline-secondary fs-btn" data-fs="fs-xs">XS</button>
+    <button type="button" class="btn btn-outline-secondary fs-btn" data-fs="fs-sm">S</button>
+    <button type="button" class="btn btn-outline-secondary fs-btn active" data-fs="fs-md">M</button>
+    <button type="button" class="btn btn-outline-secondary fs-btn" data-fs="fs-lg">L</button>
+  </div>
+</div>
+
+<div class="container container-narrow py-4">
+  <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-3">
+    <div>
+      <h1 class="h3 mb-1">BlueBridge Integration Interface Catalog</h1>
+      <div class="small-muted">
+        External-facing integration contract extract aligned to the current BlueBridge scope.
+        <br>Base path: <code class="mono">/api/integration/v1/...</code> &nbsp;|&nbsp; Auth: <code>X-Integration-Key</code> header &nbsp;|&nbsp; All dates: ISO-8601 UTC
+      </div>
+    </div>
+    <div class="text-md-end small-muted">
+      Spec version: <strong id="specVersion">BlueBridge-safe v1.0</strong> &nbsp;|&nbsp; Nopcommerce: 4.60 / 4.90
+      <br>Last updated: <strong id="lastUpdated">2026-06-15 12:00 SAST</strong>
+    </div>
+  </div>
+
+  <div class="card shadow-sm mb-3 header-zone">
+    <div class="card-body py-3 header-info">
+      <strong>Document scope:</strong> This page intentionally includes only the external interface surface required for BlueBridge alignment.
+      <br>Internal implementation details, proposal-only content, internal storage models, and engineering-only notes are intentionally omitted from this extract.
+      <br>Some write endpoints may return <code>202 PENDING_APPROVAL</code> where approval is enabled for the target site or environment.
+    </div>
+  </div>
+
+  <div class="card shadow-sm mb-2 header-zone">
+    <div class="card-body legend-box py-2">
+      <strong>Legend:</strong>
+      <span class="pill pill-method pill-method-get">GET</span>
+      <span class="pill pill-method pill-method-post">POST</span>
+      <span class="pill pill-method pill-method-put">PUT</span>
+      <span class="pill pill-method pill-method-patch">PATCH</span>
+      &nbsp;|&nbsp;
+      <span class="pill dir">direction</span>
+      <span class="pill scope">scope</span>
+      <span class="pill idemp">idempotency</span>
+      <span class="pill approval">approval required</span>
+      <span class="pill ver">versions</span>
+      &nbsp;|&nbsp;
+      <span class="status-badge status-2xx">2xx</span>
+      <span class="status-badge status-4xx">4xx</span>
+      <span class="status-badge status-5xx">5xx</span>
+      &nbsp;|&nbsp;
+      <span class="badge badge-ns-required">ERP Required</span>
+      <span class="badge badge-ns-optional">ERP Optional</span>
+    </div>
+  </div>
+
+  <div class="card shadow-sm mb-2 header-zone">
+    <div class="card-body py-2 header-info">
+      <strong>Canonical error envelope (all endpoints):</strong>
+      <code class="mono" style="font-size:.75em">{"success":false,"error":{"code":"ITEM_NOT_FOUND","message":"...","details":null},"correlationId":"..."}</code>
+      <br><span class="small-muted">Common error codes: <code>ITEM_NOT_FOUND</code> <code>VALIDATION_ERROR</code> <code>DUPLICATE_IDEMPOTENCY_KEY</code> <code>UNAUTHORIZED</code> <code>FORBIDDEN</code> <code>RFQ_NOT_SUPPORTED</code> <code>INTERNAL_ERROR</code></span>
+      <br><span class="small-muted">HTTP status mapping:
+        <code>200</code> success |
+        <code>201</code> created |
+        <code>202</code> approval pending |
+        <code>400</code> bad request / validation |
+        <code>401</code> unauthorized |
+        <code>403</code> forbidden |
+        <code>404</code> not found |
+        <code>409</code> duplicate idempotency key |
+        <code>422</code> unprocessable |
+        <code>500</code> internal error |
+        <code>501</code> module disabled
+      </span>
+      <div class="mt-2">
+        <button class="btn btn-sm btn-outline-secondary" type="button" onclick="var b=document.getElementById('errorExamplesBlock');b.classList.toggle('open');this.textContent=b.classList.contains('open')?'Hide error examples':'Show error response examples'">Show error response examples</button>
+        <div class="example-payload-block" id="errorExamplesBlock">
+          <h6 class="mt-2">404 - Item not found</h6>
+          <pre>{"success":false,"error":{"code":"ITEM_NOT_FOUND","message":"No product found with SKU: NONEXIST-SKU","details":null},"correlationId":"a1b2c3d4-e5f6-7890-abcd-ef1234567890"}</pre>
+          <h6>401 - Unauthorized</h6>
+          <pre>{"success":false,"error":{"code":"UNAUTHORIZED","message":"Invalid or missing X-Integration-Key header","details":null},"correlationId":"f1e2d3c4-b5a6-7890-abcd-ef1234567890"}</pre>
+          <h6>409 - Duplicate idempotency key</h6>
+          <pre>{"success":false,"error":{"code":"DUPLICATE_IDEMPOTENCY_KEY","message":"Idempotency-Key has already been used for a different request","details":{"originalRequestUtc":"2025-01-15T10:00:00Z","originalAction":"updated"}},"correlationId":"c3d4e5f6-a7b8-9012-cdef-123456789abc"}</pre>
+          <h6>202 - Approval pending</h6>
+          <pre>{"success":true,"data":{"status":"PENDING_APPROVAL","pendingChangeId":42,"pendingChangeNumber":"PC-000042","message":"Change staged for approval. Use GET /approvals/42 to check status."},"correlationId":"e5f6a7b8-c9d0-1234-ef12-3456789abcde"}</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card shadow-sm mb-3 sticky-search header-zone">
+    <div class="card-body">
+      <div class="row g-2 align-items-center">
+        <div class="col-12 col-md-5">
+          <input id="searchBox" class="form-control form-control-lg" type="text"
+                 placeholder="Search e.g. sku, RFQ, /orders, pricing, returns, payments...">
+          <span class="kbd-hint"><kbd>Ctrl</kbd>+<kbd>K</kbd> focus &nbsp; <kbd>Esc</kbd> clear</span>
+        </div>
+        <div class="col-12 col-md-3">
+          <select id="jumpToSelect" class="form-select jump-to-dropdown"><option value="">Jump to section&hellip;</option></select>
+        </div>
+        <div class="col-12 col-md-4">
+          <div class="d-flex gap-2">
+            <button id="expandAllBtn" class="btn btn-outline-secondary w-100">Expand all</button>
+            <button id="collapseAllBtn" class="btn btn-outline-secondary w-100">Collapse all</button>
+          </div>
+        </div>
+      </div>
+      <div class="mt-2 header-info">
+        <strong>Required headers (all endpoints):</strong>
+        <code>X-Integration-Key</code> (auth),
+        <code>X-Correlation-Id</code> (optional; server generates if absent),
+        <code>X-Store-Id</code> or <code>?storeId=</code> (optional; defaults to current store).
+        <strong>Write endpoints also require:</strong> <code>Idempotency-Key</code>.
+      </div>
+    </div>
+  </div>
+
+  <div class="card shadow-sm mb-3 header-zone guidance-panel" id="implementation-guidance">
+    <div class="card-header guidance-panel-header p-0">
+      <button class="accordion-button guidance-panel-toggle" id="toggleGuidanceBtn" type="button" data-bs-toggle="collapse" data-bs-target="#implementationGuidanceBody" aria-expanded="true" aria-controls="implementationGuidanceBody">
+        <span>
+          <strong>Implementation Guidance</strong>
+          <span class="small-muted ms-2">External integration notes for security, content semantics, and SKU handling.</span>
+        </span>
+      </button>
+    </div>
+    <div class="collapse show" id="implementationGuidanceBody">
+      <div class="card-body header-info guidance-panel-body">
+        <ul class="nav nav-tabs guidance-tabs" id="implementationGuidanceTabs" role="tablist">
+          <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="security-ops-tab" data-bs-toggle="tab" data-bs-target="#security-ops-pane" type="button" role="tab" aria-controls="security-ops-pane" aria-selected="true">Security and operational requirements</button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" id="content-model-tab" data-bs-toggle="tab" data-bs-target="#content-model-pane" type="button" role="tab" aria-controls="content-model-pane" aria-selected="false">Content model and write semantics</button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" id="sku-identity-tab" data-bs-toggle="tab" data-bs-target="#sku-identity-pane" type="button" role="tab" aria-controls="sku-identity-pane" aria-selected="false">SKU identity rules</button>
+          </li>
+        </ul>
+        <div class="tab-content guidance-tab-content" id="implementationGuidanceTabContent">
+          <div class="tab-pane fade show active" id="security-ops-pane" role="tabpanel" aria-labelledby="security-ops-tab" tabindex="0">
+            <div class="guidance-pane-title"><strong>Security and Operational Requirements</strong></div>
+            <div class="row g-3 mt-1">
+              <div class="col-12 col-xl-4">
+                <strong>Transport and access</strong>
+                <ul class="mb-0 mt-1">
+                  <li>HTTPS is required in every environment.</li>
+                  <li>Use separate credentials and monitoring per environment.</li>
+                  <li>Share restricted integration credentials rather than broad administrative access.</li>
+                </ul>
+              </div>
+              <div class="col-12 col-xl-4">
+                <strong>Retries and idempotency</strong>
+                <ul class="mb-0 mt-1">
+                  <li>All write operations require an <code>Idempotency-Key</code>.</li>
+                  <li>Retry transient failures with bounded exponential backoff.</li>
+                  <li>Reusing an idempotency key with a different payload returns <code>409 DUPLICATE_IDEMPOTENCY_KEY</code>.</li>
+                </ul>
+              </div>
+              <div class="col-12 col-xl-4">
+                <strong>Sensitive data handling</strong>
+                <ul class="mb-0 mt-1">
+                  <li>Customer, address, VAT, payment-reference, and recipient fields should be treated as sensitive.</li>
+                  <li>Sensitive card data is never exposed by this interface.</li>
+                  <li>When image URLs are used, they must be public HTTPS resources.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="tab-pane fade" id="content-model-pane" role="tabpanel" aria-labelledby="content-model-tab" tabindex="0">
+            <div class="guidance-pane-title"><strong>Content Model and Write Semantics</strong></div>
+            <div class="row g-3 mt-1">
+              <div class="col-12 col-xl-5">
+                <strong>Catalog content model</strong>
+                <ul class="mb-0 mt-1">
+                  <li>This contract assumes a single live storefront value for names, descriptions, and meta text.</li>
+                  <li>Localized translation arrays are not part of this extract.</li>
+                </ul>
+              </div>
+              <div class="col-12 col-xl-7">
+                <strong>Omit vs null vs clear</strong>
+                <ul class="mb-0 mt-1">
+                  <li><code>PUT /items/by-sku/{sku}</code> is the full base-item upsert contract for the external item record.</li>
+                  <li><code>PATCH /items/by-sku/{sku}</code> updates only the fields supplied in the request body.</li>
+                  <li>Use <code>null</code> only where the target field is defined as clearable; omit fields that should remain unchanged.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="tab-pane fade" id="sku-identity-pane" role="tabpanel" aria-labelledby="sku-identity-tab" tabindex="0">
+            <div class="guidance-pane-title"><strong>SKU Identity Rules</strong></div>
+            <div class="row g-3 mt-1">
+              <div class="col-12 col-xl-5">
+                <strong>Parent product routes</strong>
+                <ul class="mb-0 mt-1">
+                  <li>Item and pricing routes use the parent or base product SKU.</li>
+                  <li>Base item routes should not be called with child or combination SKUs.</li>
+                </ul>
+              </div>
+              <div class="col-12 col-xl-7">
+                <strong>Child and stock-specific routes</strong>
+                <ul class="mb-0 mt-1">
+                  <li>Inventory endpoints may be configured to resolve either a base SKU or a stock-bearing child SKU.</li>
+                  <li>Where RFQ or return flows are feature-gated per site, confirm enablement through <code>GET /meta/capabilities</code> before implementation.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="summary" class="small-muted mb-2"></div>
+  <div class="accordion" id="functionsAccordion"></div>
+
+  <div class="small-muted mt-4">
+    External contract extract only. Internal implementation details and non-scope modules are intentionally omitted.
+  </div>
+
+  <div class="card shadow-sm mt-4 mb-4" id="ns-contract-summary">
+    <div class="card-header" style="cursor:pointer" onclick="var b=this.nextElementSibling;var ic=this.querySelector('.ns-summary-chevron');if(b.style.display==='none'){b.style.display='';ic.textContent='\u25BE'}else{b.style.display='none';ic.textContent='\u25B8'}">
+      <h5 class="mb-0"><span class="ns-summary-chevron" style="margin-right:.4em;font-size:.85em">&#x25B8;</span>NetSuite Contract Summary - Minimum Fields Required by NetSuite</h5>
+      <div class="small-muted">Click to expand. This table shows the minimum fields NetSuite or BlueBridge must send or expect for the external integration scope documented on this page.</div>
+    </div>
+    <div class="card-body" style="display:none">
+      <div class="mb-3">
+        <strong>Legend:</strong>
+        <span class="badge badge-ns-required">ERP Required</span> NetSuite must provide this field or value for the relevant write flow.
+        <span class="badge badge-ns-optional ms-2">ERP Optional</span> NetSuite can provide or consume this field where applicable.
+      </div>
+      <div id="contractSummaryTables"></div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="js/data-integration-spec-bluebridge-safe.js"></script>
+<script src="js/data-proposed-additions-bluebridge-safe.js"></script>
+<script src="js/data-payload-examples-bluebridge-safe.js"></script>
+<script src="js/renderer.js"></script>
+<script src="js/data-contract-classification.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

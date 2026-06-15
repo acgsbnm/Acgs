@@ -201,39 +201,20 @@ const widthToggle = document.getElementById("widthToggle");
 const fsBtns = document.querySelectorAll(".fs-btn");
 const fsClasses = ["fs-xs", "fs-sm", "fs-md", "fs-lg"];
 
-if (localStorage.getItem("catalog-full-width") === "1") { document.body.classList.add("full-width"); widthToggle.checked = true; }
-const savedFs = localStorage.getItem("catalog-font-size");
-if (savedFs && fsClasses.includes(savedFs)) { document.body.classList.add(savedFs); fsBtns.forEach(b => b.classList.toggle("active", b.dataset.fs === savedFs)); }
-else { document.body.classList.add("fs-md"); }
+function initializeBodyToggle(toggle, bodyClass, storageKey) {
+  const enabled = toggle.checked || document.body.classList.contains(bodyClass);
+  document.body.classList.toggle(bodyClass, enabled);
+  toggle.checked = enabled;
+  localStorage.setItem(storageKey, enabled ? "1" : "0");
+  return enabled;
+}
 
-settingsFab.addEventListener("click", () => settingsPanel.classList.toggle("open"));
-document.addEventListener("click", e => { if (!settingsPanel.contains(e.target) && e.target !== settingsFab) settingsPanel.classList.remove("open"); });
-widthToggle.addEventListener("change", () => { document.body.classList.toggle("full-width", widthToggle.checked); localStorage.setItem("catalog-full-width", widthToggle.checked ? "1" : "0"); });
-fsBtns.forEach(btn => { btn.addEventListener("click", () => { fsClasses.forEach(c => document.body.classList.remove(c)); document.body.classList.add(btn.dataset.fs); fsBtns.forEach(b => b.classList.remove("active")); btn.classList.add("active"); localStorage.setItem("catalog-font-size", btn.dataset.fs); }); });
-
-// Data types toggle
-const typesToggle = document.getElementById("typesToggle");
-if (localStorage.getItem("catalog-show-types") === "1") { document.body.classList.add("show-types"); typesToggle.checked = true; }
-typesToggle.addEventListener("change", () => { document.body.classList.toggle("show-types", typesToggle.checked); localStorage.setItem("catalog-show-types", typesToggle.checked ? "1" : "0"); });
-
-// NS Contract toggle — CSS-only, no re-render needed
-const contractToggle = document.getElementById("contractToggle");
-if (localStorage.getItem("catalog-show-contracts") === "1") { document.body.classList.add("show-contracts"); contractToggle.checked = true; }
-contractToggle.addEventListener("change", () => { document.body.classList.toggle("show-contracts", contractToggle.checked); localStorage.setItem("catalog-show-contracts", contractToggle.checked ? "1" : "0"); });
-
-// Diff highlighting toggle — updates field-diff classes in-place, no re-render
-const diffToggle = document.getElementById("diffToggle");
-if (localStorage.getItem("catalog-show-diffs") === "1") { document.body.classList.add("show-diffs"); diffToggle.checked = true; }
-diffToggle.addEventListener("change", () => {
-  document.body.classList.toggle("show-diffs", diffToggle.checked);
-  localStorage.setItem("catalog-show-diffs", diffToggle.checked ? "1" : "0");
-  // Update field-diff highlighting in-place without re-rendering
+function applyDiffHighlighting(enabled) {
   document.querySelectorAll('.field-table tbody').forEach(tbody => {
-    if (!diffToggle.checked) {
+    if (!enabled) {
       tbody.querySelectorAll('.field-diff').forEach(tr => tr.classList.remove('field-diff'));
       return;
     }
-    // Each accordion-body has two field tables side by side (4.60 and 4.90)
     const accBody = tbody.closest('.accordion-body');
     if (!accBody) return;
     const allTbodies = accBody.querySelectorAll('.field-table tbody');
@@ -253,6 +234,35 @@ diffToggle.addEventListener("change", () => {
       }
     });
   });
+}
+
+initializeBodyToggle(widthToggle, "full-width", "catalog-full-width");
+const savedFs = localStorage.getItem("catalog-font-size");
+if (savedFs && fsClasses.includes(savedFs)) { document.body.classList.add(savedFs); fsBtns.forEach(b => b.classList.toggle("active", b.dataset.fs === savedFs)); }
+else { document.body.classList.add("fs-md"); }
+
+settingsFab.addEventListener("click", () => settingsPanel.classList.toggle("open"));
+document.addEventListener("click", e => { if (!settingsPanel.contains(e.target) && e.target !== settingsFab) settingsPanel.classList.remove("open"); });
+widthToggle.addEventListener("change", () => { document.body.classList.toggle("full-width", widthToggle.checked); localStorage.setItem("catalog-full-width", widthToggle.checked ? "1" : "0"); });
+fsBtns.forEach(btn => { btn.addEventListener("click", () => { fsClasses.forEach(c => document.body.classList.remove(c)); document.body.classList.add(btn.dataset.fs); fsBtns.forEach(b => b.classList.remove("active")); btn.classList.add("active"); localStorage.setItem("catalog-font-size", btn.dataset.fs); }); });
+
+// Data types toggle
+const typesToggle = document.getElementById("typesToggle");
+initializeBodyToggle(typesToggle, "show-types", "catalog-show-types");
+typesToggle.addEventListener("change", () => { document.body.classList.toggle("show-types", typesToggle.checked); localStorage.setItem("catalog-show-types", typesToggle.checked ? "1" : "0"); });
+
+// NS Contract toggle — CSS-only, no re-render needed
+const contractToggle = document.getElementById("contractToggle");
+initializeBodyToggle(contractToggle, "show-contracts", "catalog-show-contracts");
+contractToggle.addEventListener("change", () => { document.body.classList.toggle("show-contracts", contractToggle.checked); localStorage.setItem("catalog-show-contracts", contractToggle.checked ? "1" : "0"); });
+
+// Diff highlighting toggle — updates field-diff classes in-place, no re-render
+const diffToggle = document.getElementById("diffToggle");
+applyDiffHighlighting(initializeBodyToggle(diffToggle, "show-diffs", "catalog-show-diffs"));
+diffToggle.addEventListener("change", () => {
+  document.body.classList.toggle("show-diffs", diffToggle.checked);
+  localStorage.setItem("catalog-show-diffs", diffToggle.checked ? "1" : "0");
+  applyDiffHighlighting(diffToggle.checked);
 });
 
 // Dark mode toggle
@@ -387,7 +397,7 @@ printToggle.addEventListener("change", () => { document.body.classList.toggle("p
     });
 
     html += `<h6 class="mt-3 mb-2">${fn.title} <span class="badge bg-secondary">${sorted.length} NS fields</span></h6>`;
-    html += `<div class="table-responsive"><table class="table table-sm table-striped align-middle"><thead><tr><th>NetSuite Field</th><th>Nop Table</th><th>Contract</th><th>Direction</th><th>Used by</th><th>Notes</th></tr></thead><tbody>`;
+    html += `<div class="table-responsive"><table class="table table-sm table-striped align-middle"><thead><tr><th>NetSuite Field</th><th>Object / Area</th><th>Contract</th><th>Direction</th><th>Used by</th><th>Notes</th></tr></thead><tbody>`;
     sorted.forEach(f => {
       const badge = f.contract === 'ns-required'
         ? '<span class="badge badge-ns-required">ERP Required</span>'

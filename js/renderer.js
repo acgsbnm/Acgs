@@ -63,7 +63,7 @@ function renderFieldTable(versionKey, fields, query, otherFields) {
     const rowClass = (f.contract === 'nop-internal' || f.contract === 'auto-generated') ? 'row-nop-internal' : '';
     return `<tr class="${isDiff?'field-diff':''} ${rowClass}"><td class="${f.required?"field-required":""}">${tbl}</td><td class="${f.required?"field-required":""}">${fld}</td><td class="col-type mono">${typeVal}</td><td>${f.required?'<span class="badge badge-required">required</span>':'<span class="badge badge-optional">optional</span>'}</td><td class="col-contract">${contractBadge(f.contract)}</td><td class="small-muted">${notes}</td></tr>`;
   }).join("");
-  return `<div class="table-responsive"><table class="table table-sm align-middle field-table"><thead><tr><th>Table</th><th>Field</th><th class="col-type">Type</th><th>Req</th><th class="col-contract">NS Contract</th><th>Notes</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+  return `<div class="table-responsive"><table class="table table-sm align-middle field-table"><thead><tr><th>Area</th><th>Field</th><th class="col-type">Type</th><th>Req</th><th class="col-contract">NS Contract</th><th>Notes</th></tr></thead><tbody>${rows}</tbody></table></div>`;
 }
 
 function renderVersionPane(ver) {
